@@ -1,0 +1,29 @@
+package ru.stepup.dbMethods;
+
+import ru.stepup.BaseTest;
+import ru.stepup.dto.Employee;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class GetAllEmp extends BaseTest {
+    public static List<Employee> get(){
+        String selectEmpsSql = "SELECT * FROM Employee";
+        List<Employee> emps = new ArrayList<>();
+
+        try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
+             PreparedStatement prepSt = conn.prepareStatement(selectEmpsSql)){
+
+            try (ResultSet rs = prepSt.executeQuery()) {
+                while (rs.next()) {
+                    emps.add(new Employee(rs.getInt( "id"),rs.getString("Name"),rs.getInt("departmentId")));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return emps;
+    }
+}
