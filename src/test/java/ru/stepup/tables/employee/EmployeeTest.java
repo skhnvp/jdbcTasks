@@ -7,6 +7,7 @@ import ru.stepup.dto.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -91,5 +92,34 @@ public class EmployeeTest extends BaseTest {
         System.out.println("Кол-во сотрудников: " + sizeITDep);
 
         Assertions.assertEquals(2, sizeITDep);
+    }
+
+    @Test
+    @Order(4)
+    void whenDepIsDeleted() {
+        /**
+        * «При удалении отдела (Department) информация о всех сотрудниках, работающих в этом отделе, должна быть удалена».
+         **/
+
+        int depId = 2;
+        List<Employee> EmpsBeforeDel = GetAllEmpByDep.get(depId);
+        System.out.println(EmpsBeforeDel);
+
+        String updateAnnSql = "DELETE FROM Employee WHERE departmentid = ?";
+
+        try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
+             PreparedStatement prepSt = conn.prepareStatement(updateAnnSql)) {
+
+            prepSt.setInt(1, depId);
+            prepSt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<Employee> EmpsAfterDel = GetAllEmpByDep.get(depId);
+        System.out.println(EmpsAfterDel);
+
+        Assertions.assertEquals(new ArrayList<>(), EmpsAfterDel);
+
     }
 }
