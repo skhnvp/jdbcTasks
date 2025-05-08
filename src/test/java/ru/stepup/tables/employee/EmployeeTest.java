@@ -102,10 +102,10 @@ public class EmployeeTest extends BaseTest {
          **/
 
         int depId = 2;
-        List<Employee> EmpsBeforeDel = GetAllEmpByDep.get(depId);
+        List<Employee> EmpsBeforeDel = GetAllEmp.get();
         System.out.println(EmpsBeforeDel);
 
-        String updateAnnSql = "DELETE FROM Employee WHERE departmentid = ?";
+        String updateAnnSql = "DELETE FROM Department WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
              PreparedStatement prepSt = conn.prepareStatement(updateAnnSql)) {
@@ -116,10 +116,11 @@ public class EmployeeTest extends BaseTest {
             throw new RuntimeException(e);
         }
 
-        List<Employee> EmpsAfterDel = GetAllEmpByDep.get(depId);
+        List<Employee> EmpsAfterDel = GetAllEmp.get();
         System.out.println(EmpsAfterDel);
 
-        Assertions.assertEquals(new ArrayList<>(), EmpsAfterDel);
 
+        Assertions.assertTrue(EmpsAfterDel.stream().noneMatch(emp -> emp.getDepartmentId() == depId),
+                "Не должно быть сотрудников с departmentId: " + depId);
     }
 }
