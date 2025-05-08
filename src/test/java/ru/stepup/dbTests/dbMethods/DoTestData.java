@@ -1,4 +1,4 @@
-package ru.stepup.dbMethods;
+package ru.stepup.dbTests.dbMethods;
 
 import ru.stepup.BaseTest;
 
@@ -9,11 +9,11 @@ import java.sql.Statement;
 
 public class DoTestData extends BaseTest {
     public static void doData() {
-        try (Connection conn = DriverManager.getConnection(getProperty("db.url"))) {
+        try (Connection conn = DriverManager.getConnection(getProperty("test.db.url"))) {
             Statement stm = conn.createStatement();
 
             stm.executeUpdate("DROP TABLE Employee IF EXISTS");
-            stm.executeUpdate("CREATE TABLE Employee(ID INT PRIMARY KEY, NAME VARCHAR(255), DepartmentID INT)");
+            stm.executeUpdate("CREATE TABLE Employee(ID INT PRIMARY KEY, NAME VARCHAR(255), DepartmentID INT, FOREIGN KEY (DepartmentID) REFERENCES Department(ID) ON DELETE CASCADE)");
             stm.executeUpdate("INSERT INTO Employee VALUES(1,'pete',1)");
             stm.executeUpdate("INSERT INTO Employee VALUES(2,'Ann',1)");
             stm.executeUpdate("INSERT INTO Employee VALUES(3,'liz',2)");

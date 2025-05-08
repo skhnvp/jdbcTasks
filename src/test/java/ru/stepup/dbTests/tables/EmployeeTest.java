@@ -1,16 +1,14 @@
-package ru.stepup.tables.employee;
+package ru.stepup.dbTests.tables;
 
 import org.junit.jupiter.api.*;
 import ru.stepup.BaseTest;
-import ru.stepup.dbMethods.*;
-import ru.stepup.dto.Employee;
+import ru.stepup.dbTests.dbMethods.*;
+import ru.stepup.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class EmployeeTest extends BaseTest {
@@ -33,12 +31,12 @@ public class EmployeeTest extends BaseTest {
         List<Employee> emps = GetAllEmpByName.get(name);
 
         Assertions.assertEquals(1, emps.stream().filter(emp -> emp.getName().equals(name)).count());
-        Optional<Integer> annId = emps.stream().filter(emp -> emp.getName().equals(name)).map(Employee::getId).findFirst();
+        Optional<Integer> annId = emps.stream().filter(emp -> emp.getName().equals(name)).map(Employee::getEmployeeId).findFirst();
 
         if (!annId.isEmpty()) {
             String updateAnnSql = "UPDATE Employee SET departmentid = ? WHERE id = ?";
 
-            try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
+            try (Connection conn = DriverManager.getConnection(getProperty("test.db.url"));
                  PreparedStatement prepSt = conn.prepareStatement(updateAnnSql)) {
 
                 prepSt.setInt(1, department);
@@ -66,14 +64,14 @@ public class EmployeeTest extends BaseTest {
 
             String updateEmpsSql = "UPDATE Employee SET name = ? WHERE id = ?";
 
-            try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
+            try (Connection conn = DriverManager.getConnection(getProperty("test.db.url"));
                  PreparedStatement prepSt = conn.prepareStatement(updateEmpsSql)) {
 
                 for (Employee lowerCaseEmp : lowerCaseEmps) {
                     System.out.println(Character.toUpperCase(lowerCaseEmp.getName().charAt(0)) + lowerCaseEmp.getName().substring(1));
 
                     prepSt.setString(1, Character.toUpperCase(lowerCaseEmp.getName().charAt(0)) + lowerCaseEmp.getName().substring(1));
-                    prepSt.setInt(2, lowerCaseEmp.getId());
+                    prepSt.setInt(2, lowerCaseEmp.getEmployeeId());
                     prepSt.executeUpdate();
                 }
             } catch (SQLException e) {
@@ -107,7 +105,7 @@ public class EmployeeTest extends BaseTest {
 
         String updateAnnSql = "DELETE FROM Department WHERE id = ?";
 
-        try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
+        try (Connection conn = DriverManager.getConnection(getProperty("test.db.url"));
              PreparedStatement prepSt = conn.prepareStatement(updateAnnSql)) {
 
             prepSt.setInt(1, depId);

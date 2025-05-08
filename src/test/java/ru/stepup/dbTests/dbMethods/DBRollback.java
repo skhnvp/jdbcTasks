@@ -1,4 +1,4 @@
-package ru.stepup.dbMethods;
+package ru.stepup.dbTests.dbMethods;
 
 import ru.stepup.BaseTest;
 
@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class DBRollback extends BaseTest {
     public static void rollback() {
-        try (Connection conn = DriverManager.getConnection(getProperty("db.url"))) {
+        try (Connection conn = DriverManager.getConnection(getProperty("test.db.url"))) {
             Statement stm = conn.createStatement();
             stm.executeUpdate("DROP TABLE Department IF EXISTS");
             stm.executeUpdate("CREATE TABLE Department(ID INT PRIMARY KEY, NAME VARCHAR(255))");
@@ -18,7 +18,7 @@ public class DBRollback extends BaseTest {
             stm.executeUpdate("INSERT INTO Department VALUES(3,'HR')");
 
             stm.executeUpdate("DROP TABLE Employee IF EXISTS");
-            stm.executeUpdate("CREATE TABLE Employee(ID INT PRIMARY KEY, NAME VARCHAR(255), DepartmentID INT)");
+            stm.executeUpdate("CREATE TABLE Employee(ID INT PRIMARY KEY, NAME VARCHAR(255), DepartmentID INT, FOREIGN KEY (DepartmentID) REFERENCES Department(ID) ON DELETE CASCADE)");
             stm.executeUpdate("INSERT INTO Employee VALUES(1,'Pete',1)");
             stm.executeUpdate("INSERT INTO Employee VALUES(2,'Ann',1)");
 

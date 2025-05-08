@@ -1,7 +1,7 @@
-package ru.stepup.dbMethods;
+package ru.stepup.dbTests.dbMethods;
 
 import ru.stepup.BaseTest;
-import ru.stepup.dto.Employee;
+import ru.stepup.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class GetAllEmp extends BaseTest {
         String selectEmpsSql = "SELECT * FROM Employee";
         List<Employee> emps = new ArrayList<>();
 
-        try (Connection conn = DriverManager.getConnection(getProperty("db.url"));
+        try (Connection conn = DriverManager.getConnection(getProperty("test.db.url"));
              PreparedStatement prepSt = conn.prepareStatement(selectEmpsSql)){
 
             try (ResultSet rs = prepSt.executeQuery()) {
